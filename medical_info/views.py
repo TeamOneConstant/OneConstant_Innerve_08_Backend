@@ -238,6 +238,27 @@ class UploadMedicalReports(APIView):
         return Response({"success": True, "message": "Medical report uploaded!", "data": data})
 
 
+class PostReportInfo(APIView):
+
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    @transaction.atomic
+    def post(self, request):
+
+        rd = request.data
+        print("rd :: ", rd)
+
+        user = request.user
+        print("user :: ",user)
+
+        mr = MedicalReports.objects.filter(id=rd['mr_id']).first()
+        ReportInfo.objects.create(report=mr, patient=user, information=rd['info'])
+
+        return Response({"success": True, "message": "Report information saved !"})
+
+
+
 
 
 

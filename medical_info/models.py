@@ -37,5 +37,13 @@ class MedicalReports(models.Model):
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
 
+class ReportInfo(models.Model):
 
+    patient = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    report = models.ForeignKey(MedicalReports, on_delete=models.CASCADE)
+    information = models.TextField(max_length=2048, blank=True, null=True)
+
+    # timestamps
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
