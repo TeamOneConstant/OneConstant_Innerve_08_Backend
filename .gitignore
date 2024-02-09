@@ -1,0 +1,7 @@
+.env
+db.sqlite3
+**/__pycache__
+**/temp.txt
+res.json
+media/medical_reports/**
+temp.*
