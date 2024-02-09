@@ -151,41 +151,43 @@ class PredictDisease(APIView):
 
         # disease prediction here
 
-        vertexai.init(project="585421955813", location="us-central1", credentials=credentials)
-        parameters = {
-            "candidate_count": 1,
-            "max_output_tokens": 1024,
-            "temperature": 0.2,
-            "top_p": 0.8,
-            "top_k": 40
-        }
-        model = TextGenerationModel.from_pretrained("text-bison@001")
-        model = model.get_tuned_model("projects/585421955813/locations/us-central1/models/382698216186970112")
-        response = model.predict(
-            # """im having chest pain, shortness of breathing, fatigue, cough with phlegm, fever and bluish lips or face give me response in json format only include disease name as key 'disease', its description as key 'description', its first aid as key 'first_aid' and all medicine details as key 'medicines'. response must be in pure json format only don't include anything other than json in response.""",
-            f"""im having {rd['symptoms']} give me response in json format only include disease name as key \'disease\', its description as key \'description\', its first aid as key \'first_aid\' and all medicine details as key \'medicines\'.""",
-            **parameters
-        )
+        # vertexai.init(project="585421955813", location="us-central1", credentials=credentials)
+        # parameters = {
+        #     "candidate_count": 1,
+        #     "max_output_tokens": 1024,
+        #     "temperature": 0.2,
+        #     "top_p": 0.8,
+        #     "top_k": 40
+        # }
+        # model = TextGenerationModel.from_pretrained("text-bison@001")
+        # model = model.get_tuned_model("projects/585421955813/locations/us-central1/models/382698216186970112")
+        # response = model.predict(
+        #     # """im having chest pain, shortness of breathing, fatigue, cough with phlegm, fever and bluish lips or face give me response in json format only include disease name as key 'disease', its description as key 'description', its first aid as key 'first_aid' and all medicine details as key 'medicines'. response must be in pure json format only don't include anything other than json in response.""",
+        #     f"""im having {rd['symptoms']} give me response in json format only include disease name as key \'disease\', its description as key \'description\', its first aid as key \'first_aid\' and all medicine details as key \'medicines\'.""",
+        #     **parameters
+        # )
 
-        print("response :: ", response)
-        print(f"Response from Model text :: {response.text}")
-        resps = str(str(response.text).replace('`', '').replace('json', ''))
+        # print("response :: ", response)
+        # print(f"Response from Model text :: {response.text}")
+        # resps = str(str(response.text).replace('`', '').replace('json', ''))
 
-        try:
-            resps = json.loads(resps)
-        except Exception as err:
-            print("Error 230 :: ", err)
-            try:
-                resps = json.loads(response.text)
-            except Exception as e:
-                print("Error 180 :: ", e)
-                return Response({"success": False, "message": "Something went wrong !"})
+        # try:
+        #     resps = json.loads(resps)
+        # except Exception as err:
+        #     print("Error 230 :: ", err)
+        #     try:
+        #         resps = json.loads(response.text)
+        #     except Exception as e:
+        #         print("Error 180 :: ", e)
+        #         return Response({"success": False, "message": "Something went wrong !"})
 
 
-        print(f"Response from Model json: {resps}")
-        print(f"Response type: {type(resps)}")
-        print(f"Response from Model json first_aid: {resps['first_aid']}")
-        print(f"Response from Model json first_aid: {type(resps['first_aid'])}")
+        # print(f"Response from Model json: {resps}")
+        # print(f"Response type: {type(resps)}")
+        # print(f"Response from Model json first_aid: {resps['first_aid']}")
+        # print(f"Response from Model json first_aid: {type(resps['first_aid'])}")
+
+        resps = tr
 
         new_d = DiseaseInfo.objects.create(patient=user, disease=resps['disease'], description=resps['description'],
                                            first_aid=resps['first_aid'], symptoms=rd['symptoms'], medicines=resps['medicines'],
@@ -259,10 +261,21 @@ class PostReportInfo(APIView):
         return Response({"success": True, "message": "Report information saved !"})
 
 
-class BookAppointment(APIView):
+class AppointmentAPI(APIView):
 
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
+
+    @transaction.atomic
+    def get(self, request):
+
+        a_id = request.GET.get('a_id', None)
+
+        if a_id is not None:
+            appointment = Appointment.objects.filter(id=a_id)
+
+        return Response({"success": True, "message": "Appointment fetched !"})
+
 
     @transaction.atomic
     def post(self, request):
