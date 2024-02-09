@@ -272,9 +272,11 @@ class AppointmentAPI(APIView):
         a_id = request.GET.get('a_id', None)
 
         if a_id is not None:
-            appointment = Appointment.objects.filter(id=a_id)
+            appointment = Appointment.objects.filter(id=a_id).first()
+            data = AppointmentSerializer(appointment).data
+            return Response({"success": True, "message": "Appointment fetched !", "data": data})
 
-        return Response({"success": True, "message": "Appointment fetched !"})
+        return Response({"success": False, "message": "Something went wrong !"})
 
 
     @transaction.atomic
