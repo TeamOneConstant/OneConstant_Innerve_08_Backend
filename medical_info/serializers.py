@@ -17,3 +17,11 @@ class DiseaseInfoSerializer(ModelSerializer):
         model = DiseaseInfo
         fields = '__all__'
 
+
+# Appointment model serializer
+class AppointmentSerializer(ModelSerializer):
+
+    class Meta:
+        model = Appointment
+        fields = '__all__'
+

@@ -47,3 +47,24 @@ class ReportInfo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
+
+class Appointment(models.Model):
+
+    patient = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, null=True)
+    date = models.DateField()
+    time = models.TimeField()
+    # state => booked | cancelled | completed 
+    state = models.CharField(max_length=16, default="booked")
+    booking_for = models.CharField(max_length=8)
+    name = models.CharField(max_length=128, blank=True, null=True)
+    gender = models.CharField(max_length=16, blank=True, null=True)
+    age = models.CharField(max_length=8, blank=True, null=True)
+
+    # timestamps
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
+
+
+
+
+

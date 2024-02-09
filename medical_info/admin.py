@@ -7,5 +7,5 @@ from medical_info.models import *
 admin.site.register(DiseaseInfo)
 admin.site.register(MedicalReports)
 admin.site.register(ReportInfo)
-
+admin.site.register(Appointment)
 

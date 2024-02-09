@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+from accounts.helpers import formatDate
 
 from backend import settings
 from accounts.models import *
@@ -256,6 +257,38 @@ class PostReportInfo(APIView):
         ReportInfo.objects.create(report=mr, patient=user, information=rd['info'])
 
         return Response({"success": True, "message": "Report information saved !"})
+
+
+class BookAppointment(APIView):
+
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    @transaction.atomic
+    def post(self, request):
+
+        rd = request.data
+        print("rd :: ", rd)
+
+        user = request.user
+        print("user :: ",user)
+
+        if Appointment.objects.filter(state="booked", date=formatDate(rd['date']), time=rd['time'], booking_for=rd['booking_for']).exists():
+            return Response({"success": False, "message": "Appointment already booked !"})
+
+
+        if rd['booking_for'] == "other":
+            new_a = Appointment.objects.create(date=formatDate(rd['date']), time=rd['time'], booking_for=rd['booking_for'], 
+                                               name=rd['name'], gender=rd['gender'], age=rd['age'])
+        elif rd['booking_for'] == "self":
+            new_a = Appointment.objects.create(patient=user, date=formatDate(rd['date']), time=rd['time'], booking_for=rd['booking_for'],)
+
+        else:
+            new_a = None
+
+        data = AppointmentSerializer(new_a).data
+
+        return Response({"success": True, "message": "Appointment booked successfully !", "data": data})
 
 
 
