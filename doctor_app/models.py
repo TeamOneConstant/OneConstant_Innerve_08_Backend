@@ -10,6 +10,7 @@ class DoctorDetails(models.Model):
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     speciality = ArrayField(models.CharField(max_length=32), size=10)
+    diseases_can_treat = ArrayField(models.CharField(max_length=32), size=30, blank=True, null=True)
     experience = models.CharField(max_length=16)
     patient_count = models.IntegerField(default=0)
     is_verified = models.BooleanField(default=False)

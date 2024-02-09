@@ -27,7 +27,7 @@ class GetDoctorList(APIView):
         disease = DiseaseInfo.objects.filter(patient=user).order_by('id').last()
         print("disease :: ", disease.disease)
         
-        doctors = DoctorDetails.objects.filter(speciality__in=disease.disease).order_by('-rating')
+        doctors = DoctorDetails.objects.filter(diseases_can_treat__in=disease.disease).order_by('-rating')
         data = DoctorDetailsSerializer(doctors, many=True).data
 
         return Response({"success": True, "message": "Doctors list fetched !", "data": data})
