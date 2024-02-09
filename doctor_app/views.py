@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
+from accounts.serializers import CustomUserSerializer
 
 from medical_info.models import *
 from doctor_app.models import *
@@ -28,7 +29,13 @@ class GetDoctorList(APIView):
         print("disease :: ", disease.disease)
         
         doctors = DoctorDetails.objects.filter(diseases_can_treat__contains=[disease.disease]).order_by('-rating')
-        data = DoctorDetailsSerializer(doctors, many=True).data
+        res = DoctorDetailsSerializer(doctors, many=True).data
+
+        data = []
+        for i in res:
+            d = CustomUser.objects.filter(id=i['user']).first()
+            i['user'] = CustomUserSerializer(d).data
+            data.append(i)
 
         return Response({"success": True, "message": "Doctors list fetched !", "data": data})
 
