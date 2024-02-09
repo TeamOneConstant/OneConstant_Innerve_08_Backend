@@ -52,6 +52,8 @@ INSTALLED_APPS = [
 
     # apps
     'accounts',
+    'medical_info',
+    'doctor_app',
 
 ]
 

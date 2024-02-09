@@ -31,8 +31,8 @@ class CustomAccountManager(BaseUserManager):
 
         user = self.model(mobile_number=mobile_number, **other_fields)
 
-        if password is not None:
-            user.set_password(mobile_number)
+        if password == None:
+            user.set_password(str(mobile_number))
 
         user.save()
         return user
