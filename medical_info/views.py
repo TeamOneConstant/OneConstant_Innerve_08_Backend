@@ -160,7 +160,8 @@ class PredictDisease(APIView):
             "top_k": 40
         }
         model = TextGenerationModel.from_pretrained("text-bison@001")
-        model = model.get_tuned_model("projects/585421955813/locations/us-central1/models/382698216186970112")
+        # model = model.get_tuned_model("projects/585421955813/locations/us-central1/models/382698216186970112")
+        model = model.get_tuned_model("projects/585421955813/locations/us-central1/models/283689393128996864")
         response = model.predict(
             # """im having chest pain, shortness of breathing, fatigue, cough with phlegm, fever and bluish lips or face give me response in json format only include disease name as key 'disease', its description as key 'description', its first aid as key 'first_aid' and all medicine details as key 'medicines'. response must be in pure json format only don't include anything other than json in response.""",
             f"""im having {rd['symptoms']} give me response in json format only include disease name as key \'disease\', its description as key \'description\', its first aid as key \'first_aid\' and all medicine details as key \'medicines\'.""",
